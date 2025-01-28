@@ -1,0 +1,1 @@
+less_distance = lambda distance1, distance2: distance1 < distance2

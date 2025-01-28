@@ -1,0 +1,1 @@
+has_capacity_to_host = lambda service, satellite: service.demand['cpu'] <= satellite.capacity['cpu'] and service.demand['memory'] <= satellite.capacity['memory']
