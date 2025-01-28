@@ -13,7 +13,7 @@ class Simulator:
 
     def initialize(self, satellites, services) -> None:
         self.satellites = [ Satellite('', sat.coordinates, {}) for sat in satellites ]
-        self.services = [ Service(srv.start, srv.demand.copy(), srv.coordinates, srv.provisioning_duration) for srv in services ]
+        self.services = [ Service(srv.start, srv.demand.copy(), srv.coordinates, srv.provisioned_time) for srv in services ]
 
     def remove_finished_services(self) -> None:
         for service in self.services:
@@ -51,7 +51,7 @@ class Simulator:
 
                 print(f"============ {alg.__name__.upper()}: {self.step} ============")
                 for i, service in enumerate(self.services):
-                    print(f"[{service.id}]: STATUS: {service.status}   TIME REMAINING: {service.provisioning_duration}")
+                    print(f"[{service.id}]: STATUS: {service.status}   TIME REMAINING: {service.provisioned_time}")
                 print()
 
                 # Try to allocate unallocated services
@@ -60,13 +60,13 @@ class Simulator:
                 data[alg.__name__][self.step] = self.metrics.get_metrics(self.services)
                 
                 self.remove_finished_services()
-                self.metrics.clear_migrations()
+                # self.metrics.clear_migrations()
             
             print()
             print()
             print()
 
-            self.services = [ Service(srv.start, srv.demand.copy(), srv.coordinates, srv.provisioning_duration) for srv in ComponentManager.services ]
+            self.services = [ Service(srv.start, srv.demand.copy(), srv.coordinates, srv.provisioned_time) for srv in ComponentManager.services ]
             self.metrics.clear_metrics()
 
         ComponentManager.write_log(data, path_log)

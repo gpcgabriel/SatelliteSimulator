@@ -66,15 +66,15 @@ class ComponentManager():
         return [lst[i % len(lst)] for i in range(target_length)]
 
     @classmethod
-    def create_services(cls, num_services, starts: list[int]=[0], demands: list[dict]=[{}], coordinates: list[tuple]=[()], provisioning_durations: list[int]=[1]) -> None:
+    def create_services(cls, num_services, starts: list[int]=[0], demands: list[dict]=[{}], coordinates: list[tuple]=[()], provisioned_times: list[int]=[1]) -> None:
 
         starts = ComponentManager.complete_list_cyclically(starts, num_services)
         demands = ComponentManager.complete_list_cyclically(demands, num_services)
         coordinates = ComponentManager.complete_list_cyclically(coordinates, num_services)
-        provisioning_durations = ComponentManager.complete_list_cyclically(provisioning_durations, num_services)
+        provisioned_times = ComponentManager.complete_list_cyclically(provisioned_times, num_services)
         
         for i in range(0, num_services):
-            cls.services.append(Service(starts[i], demands[i], coordinates[i], provisioning_durations[i]))
+            cls.services.append(Service(starts[i], demands[i], coordinates[i], provisioned_times[i]))
 
     @staticmethod
     def write_log(data: dict, filename: str='log', indent: int=4) -> None:

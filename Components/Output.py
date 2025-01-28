@@ -1,6 +1,5 @@
 from matplotlib import pyplot as plt
 from general_utilities import num_steps
-import numpy as np
 from json import dump
 from os import path, mkdir
 
@@ -50,40 +49,6 @@ class Output:
             file.write('\n')
 
     @classmethod
-    def get_end_services(cls, steps, step):
-        return steps[step]['end_services']
-
-    @classmethod
-    def get_data(cls, algs):
-        total_resources = []
-        used_resources = []
-        provisioned = []
-        unprovisioned = []
-        provisioning = []
-        end_services = []
-        migrations = []
-        algorithms = {}
-
-        for alg in algs:
-            print(algs[alg])
-            
-        exit(1)
-            # for steps in algs[alg]:
-            #     total_resources.append(algs[alg][steps]['total'])
-            #     used_resources.append(algs[alg][steps]['used_capacity'])
-            #     provisioned.append(algs[alg][steps]['data']['provisioned'])
-            #     unprovisioned.append(algs[alg][steps]['data']['unprovisioned'])
-            #     provisioning.append(algs[alg][steps]['data']['provisioning'])
-            #     end_services.append(algs[alg][steps]['data']['end_services'])
-            #     migrations.append(algs[alg][steps]['migrations'])
-            
-            # algorithms[alg] = {'total_resources': total_resources, 'used_resources': used_resources, 'provisioned': provisioned,
-            #                    'unprovisioned': unprovisioned, 'provisioning': provisioning, 'end_services': end_services, 
-            #                    'migrations': migrations}
-        
-        return algorithms
-
-    @classmethod
     def plot(cls, name, x_label, y_label, title):
         plt.xlabel(x_label)# Define o rótulo do eixo x
         plt.ylabel(y_label) # Define o rótulo do eixo y
@@ -96,28 +61,6 @@ class Output:
         
         plt.legend()
         plt.savefig(f'graphics/{name}/{title}', dpi=300)
-        
-    @classmethod
-    def plot_total_resources(cls, data):
-        pass        
-
-    @classmethod
-    def plot_used_resources(cls, data):
-        pass
-
-    @classmethod
-    def plot_provisioned(cls, data):
-        provisioned = []
-        for alg in data:
-            for value in data[alg]['provisioned']:
-                provisioned.append(len(value))
-
-        i=0
-        plt.figure(figsize=(10, 6)) # Criando o gráfico com um tamanho de figura específico
-        for alg in data:
-            plt.plot(cls.time, provisioned, color=cls.colors[i], linestyle='-', linewidth=2, markersize=6, label=alg)
-            i+=1
-        cls.plot('', 'Steps', 'Number of services', 'provisioned')
 
     @classmethod
     def plot_data(cls, data, name):
@@ -129,36 +72,28 @@ class Output:
                 to_plot.append(len(data[alg][step]['data'][name]))
             plt.plot(cls.time, to_plot.copy(), color=cls.colors[i], linestyle='-', linewidth=2, markersize=6, label=alg)
             i+=1
-        cls.plot('', 'Steps', 'Number of services', name)
+        cls.plot('', 'Steps', 'Number of satellites', name)
             
     @classmethod
     def plot_migrations(cls, data):
-        migrations = []
-        for alg in data:
-            for mig in data[alg]['migrations']:
-                migrations.append(len(mig))
-
         i=0
         plt.figure(figsize=(10, 6)) # Criando o gráfico com um tamanho de figura específico
         for alg in data:
+            migrations = []
+            for step in data[alg]:
+                migrations.append(sum([ mig for mig in data[alg][step]['migrations'].values() ]))
             plt.plot(cls.time, migrations, color=cls.colors[i], linestyle='-', linewidth=2, markersize=6, label=alg)
             i+=1
-        cls.plot('', 'Steps', 'Number of services', 'migrations')
+        cls.plot('', 'Steps', 'Number of satellites', 'migrations')
 
     @classmethod
     def plot_graphics(cls, data):
-        #data = cls.get_data(algs)
-
-        # Total de recursos
-        # cls.plot_total_resources(algs)
-        # Recursos utilizados (por step)
-        # cls.plot_used_resources(data)
 
         # Dados de provisionamento
         cls.plot_data(data, 'unprovisioned')
         cls.plot_data(data, 'provisioned')
         cls.plot_data(data, 'provisioning')
-        cls.plot_data(data, 'end_services')  
+        cls.plot_data(data, 'end_services')   
 
-        # # Migrações
-        # cls.plot_migrations(data)
+        # Migrações
+        cls.plot_migrations(data)

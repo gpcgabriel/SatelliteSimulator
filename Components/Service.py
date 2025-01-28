@@ -1,5 +1,4 @@
-from general_utilities import service_duration, default_coordinates, sat_range, num_steps
-from random import randint
+from general_utilities import default_coordinates, sat_range, num_steps
 from geopy.distance import geodesic
 from Components.Metrics import Metrics
 
@@ -7,13 +6,12 @@ class Service():
     instances = []
     num_services = 0
 
-    def __init__(self, start: int=0, demand: dict={}, coordinates: tuple=(), provisioning_duration: int=1) -> None:
+    def __init__(self, start: int=0, demand: dict={}, coordinates: tuple=(), provisioned_time: int=1) -> None:
 
         if demand:
             self.demand = demand
         else:
             self.demand = {'cpu': 50, 'memory': 50}
-            #self.demand = {'cpu': randint(1, 99), 'memory': randint(1, 99)}
 
         if coordinates:
             self.coordinates = coordinates
@@ -21,8 +19,8 @@ class Service():
             self.coordinates = default_coordinates
 
         self.satellite = None
-        self.provisioning_duration = provisioning_duration
-        self.service_duration = provisioning_duration
+        self.provisioned_time = provisioned_time
+        self.service_duration = provisioned_time
         self.status = 'created'
         self.start = start if start else 0
         self.end = None
@@ -68,7 +66,7 @@ class Service():
         self.status = 'stopped'
         self.update_history(id, self.start, step)
         self.satellite = None
-        self.provisioning_duration = self.service_duration
+        self.provisioned_time = self.service_duration
 
     def in_range(self, sat_coordinates) -> bool:
         return (geodesic(self.coordinates, sat_coordinates).kilometers) < sat_range
@@ -83,7 +81,7 @@ class Service():
             return
 
         # Stopping process that achieved their time limit
-        if self.provisioning_duration < 1:
+        if self.provisioned_time < 1:
                 self.end = step
                 self.stop_service(self.satellite.id, step)
                 Metrics.metrics.set_end_service(self.id)
@@ -92,7 +90,8 @@ class Service():
         
         # If satellite is coming out of range, it finds a new one to migrate
         if step < num_steps:
-            if not self.in_range(self.satellite.coordinates[step+1]) and not self.provisioning_duration == 1:
+            if not self.in_range(self.satellite.coordinates[step+1]) and not self.provisioned_time == 1:
+                Metrics.metrics.set_migration(self.id)
                 self.status = "unprovisioned"
 
         # Checking if the allocated satellite is out of range
@@ -101,14 +100,14 @@ class Service():
             Metrics.metrics.set_unprovisioned(self.id)
             return
                 
-        self.provisioning_duration -= 1
+        self.provisioned_time -= 1
 
     def to_dict(self) -> dict:
         return {
             "id": self.id,
             "demand": self.demand,
             "start": self.start,
-            "provisioning_duration": self.provisioning_duration,
+            "provisioned_time": self.provisioned_time,
             "satellite": self.satellite.to_dict() if self.satellite else []
         }
 
@@ -120,7 +119,7 @@ class Service():
                 print(f'duration: ',i.duration)
                 print(f'demand: ',i.demand)
                 print(f'satellites: ',i.satellites)
-                print(f'provisioning duration: ',i.provisioning_duration)
+                print(f'provisioned time: ',i.provisioned_time)
                 print(f'start: ',i.start)
                 print(f'end: ',i.end)
                 print(f'history: ',i.history)
@@ -130,7 +129,7 @@ class Service():
                 print(f'id: ',i.id)
                 print(f'duration: ',i.duration)
                 print(f'demand: ',i.demand)
-                print(f'provisioning duration: ',i.provisioning_duration)
+                print(f'provisioned time: ',i.provisioned_time)
                 print(f'start: ',i.start)
                 print(f'end: ',i.end)
                 print(f'history: ',i.history)
