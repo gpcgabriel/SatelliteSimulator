@@ -1,11 +1,9 @@
 
 # SatelliteSimulator
-
 A simulator for offloading services on satellites in python language.
 
 
 ## Requeriments
-
 - `contourpy`: 1.3.1;
 - `cycler`: 0.12.1;
 - `fonttools`: 4.55.5;
@@ -19,40 +17,39 @@ A simulator for offloading services on satellites in python language.
 - `pyparsing`: 3.2.1;
 - `python-dateutil`: 2.9.0.post0;
 - `six`: 1.17.0;
-## Installation
 
+## Installation
 Execute the follow script to install this project:
 
 - Initialize git:
 ```bash
-  git init
+git init
 ```
 
 - Add repository:
 ```bash
-  git remote add origin https://github.com/gpcgabriel/SatelliteSimulator.git
+git remote add origin https://github.com/gpcgabriel/SatelliteSimulator.git
 ```
 
 - Fetch the Latest Changes
 ```bash
-  git pull origin main
+git pull origin main
 ```
 
 - Install requeriments with pip:
 ```bash
-  pip install -r requeriments.txt
+pip install -r requeriments.txt
 ```
 ## Usage
-
 Run code:
 ```bash
-  python3 main.py
+python3 main.py
 ```
-## Authors
 
+## Authors
 - [@gpcgabriel](https://www.github.com/gpcgabriel)
 - [@diogo2m](https://www.github.com/diogo2m)
 - [@mcluizelli](https://www.github.com/mcluizelli)
-## Support
 
+## Support
 If you have any questions or suggestions, please contact us by email: gabrieprates.aluno@unipampa.edu.br or diogomonteiro.aluno@unipampa.edu.br
