@@ -1,7 +1,7 @@
 from matplotlib import pyplot as plt
 from general_utilities import num_steps
 from json import dump
-from os import path, mkdir
+from os import path, makedirs
 
 class Output:
     time = [i for i in range(0, num_steps)]
@@ -29,7 +29,7 @@ class Output:
     @staticmethod
     def create_directory(directory: str) -> None:
         if not path.exists(directory):
-            mkdir(directory)
+            makedirs(directory)
 
     @staticmethod
     def write_log(data: dict, filename: str='log', indent: int=4) -> None:
@@ -57,7 +57,7 @@ class Output:
         plt.tight_layout() # Ajusta o layout para evitar sobreposição de elementos
         
         title = title.lower().replace(' ', '_')
-        cls.create_directory(f'./graphics/{name}') if name != '' else None
+        cls.create_directory(f'./graphics/{name}') if name != '' else cls.create_directory('./graphics')
         
         plt.legend()
         plt.savefig(f'graphics/{name}/{title}', dpi=300)
@@ -88,7 +88,6 @@ class Output:
 
     @classmethod
     def plot_graphics(cls, data):
-
         # Dados de provisionamento
         cls.plot_data(data, 'unprovisioned')
         cls.plot_data(data, 'provisioned')

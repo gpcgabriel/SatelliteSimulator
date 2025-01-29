@@ -2,6 +2,7 @@ from Components import *
 from Components.Output import Output
 from json import dump, load
 from general_utilities import path_dataset
+from os import path, mkdir
 
 class ComponentManager():
     instance = None
@@ -89,6 +90,12 @@ class ComponentManager():
         Returns:
             None
         """
+        if not filename.endswith('.json'):
+            filename += '.json'
+        
+        if not path.exists('./data'):
+            mkdir('./data')
+
         with open(filename, 'w') as file:
             dump(data, file, indent=indent)
             file.write('\n')

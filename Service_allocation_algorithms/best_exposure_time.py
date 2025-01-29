@@ -1,6 +1,5 @@
 from .lambda_functions import distance as dst
 from .lambda_functions import has_capacity_to_host as hcth
-from geopy.distance import geodesic
 
 sat_range = 2000.0
 
