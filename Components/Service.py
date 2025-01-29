@@ -19,8 +19,8 @@ class Service():
             self.coordinates = default_coordinates
 
         self.satellite = None
-        self.provisioned_time = provisioned_time
-        self.service_duration = provisioned_time
+        self.service_duration = provisioned_time if provisioned_time else 1
+        self.provisioned_time = self.provisioned_time
         self.status = 'created'
         self.start = start if start else 0
         self.end = None
