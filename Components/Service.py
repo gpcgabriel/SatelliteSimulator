@@ -6,7 +6,7 @@ class Service():
     instances = []
     num_services = 0
 
-    def __init__(self, start: int=0, demand: dict={}, coordinates: tuple=(), provisioned_time: int=1) -> None:
+    def __init__(self, start: int=0, demand: dict={}, coordinates: tuple=(), service_duration: int=1) -> None:
 
         if demand:
             self.demand = demand
@@ -19,7 +19,7 @@ class Service():
             self.coordinates = default_coordinates
 
         self.satellite = None
-        self.service_duration = provisioned_time if provisioned_time else 1
+        self.service_duration = service_duration if service_duration else 1
         self.provisioned_time = self.service_duration
         self.status = 'created'
         self.start = start if start else 0
@@ -47,7 +47,7 @@ class Service():
         """
         if self.satellite:
             self.stop_service(self.satellite.id, step)
-            Metrics.metrics.set_unprovisioned(self.id)
+            # Metrics.metrics.set_unprovisioned(self.id)
             self.start = step # Altera o start para a nova provisão
             self.migration_flag = True
         
