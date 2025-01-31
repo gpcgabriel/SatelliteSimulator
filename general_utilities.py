@@ -5,6 +5,7 @@ num_satellites = 200
 num_services = 20
 num_steps = 20
 default_coordinates = (-24.7875286, -55.768967)
+earth_radius = 6371.0
 
 service_duration = 3
 provisioning_duration = 10

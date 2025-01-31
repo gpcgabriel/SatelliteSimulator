@@ -1,4 +1,4 @@
-from general_utilities import default_coordinates, num_steps, raio_terra
+from general_utilities import default_coordinates, num_steps, earth_radius
 from Components.Metrics import Metrics
 from random import randint
 import math
@@ -18,7 +18,6 @@ class Satellite():
             self.capacity = capacity
         else:
             self.capacity = {'cpu': 100, 'memory': 100}
-            #self.capacity = {'cpu': randint(50, 99), 'memory': randint(50, 99)}
 
         self.total_capacity = self.capacity.copy()
         self.services = {}
@@ -28,6 +27,29 @@ class Satellite():
 
         __class__.instances.append(self)
         __class__.num_satellites += 1
+
+    @classmethod
+    def get_satellite(cls, id: int) -> object:
+        """
+        Retrieves a satellite instance by its ID.
+
+        Args:
+            id (int): The ID of the satellite.
+
+        Returns:
+            object: The satellite instance with the specified ID, or None if not found.
+        """
+        return next((sat for sat in cls.get_all() if sat.id == id), None)
+
+    @classmethod
+    def get_all(cls):
+        """
+        Retrieves all satellite instances.
+
+        Returns:
+            list: A list of all satellite instances.
+        """
+        return cls.instances.copy()
 
     def calcular_distancia_haversine(self, lat1, lon1, lat2, lon2):
         """
@@ -48,7 +70,7 @@ class Satellite():
         a = math.sin(dlat / 2)**2 + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dlon / 2)**2
         c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
         
-        return raio_terra * c
+        return earth_radius * c
 
     def generate_initial_coordinates(self):
         lat_alvo, lon_alvo = default_coordinates
@@ -72,7 +94,7 @@ class Satellite():
         
         # Calculando a distância percorrida por deslocamento
         distancia_por_deslocamento = sat_vel_km_h * tempo_por_deslocamento
-        angulo_por_deslocamento = distancia_por_deslocamento / (2 * math.pi * raio_terra) * 360  # graus
+        angulo_por_deslocamento = distancia_por_deslocamento / (2 * math.pi * earth_radius) * 360  # graus
         
         # Calculando a longitude inicial ajustada
         lon_inicial_ajustada = (lon_alvo - num_steps * angulo_por_deslocamento) % 360
