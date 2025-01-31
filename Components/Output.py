@@ -4,26 +4,26 @@ from json import dump
 from os import path, makedirs
 
 class Output:
-    time = [i for i in range(0, num_steps)]
+    time = None
     colors = [
-            'blue',     # Azul
-            'red',      # Vermelho
-            'green',    # Verde
-            'cyan',     # Ciano
-            'magenta',  # Magenta
-            'yellow',   # Amarelo
-            'black',    # Preto
-            'white',    # Branco
-            'gray',     # Cinza
-            'orange',   # Laranja
-            'purple',   # Roxo
-            'brown',    # Marrom
-            'pink',     # Rosa
-            'gold',     # Ouro
-            'beige',    # Bege
-            'olive',    # Oliva
-            'aqua',     # Aqua
-            'navy'      # Navy
+            'blue',
+            'red',
+            'green',
+            'cyan',
+            'magenta',
+            'yellow',
+            'black',
+            'white',
+            'gray',
+            'orange',
+            'purple',
+            'brown',
+            'pink',
+            'gold',
+            'beige',
+            'olive',
+            'aqua',
+            'navy'
         ]
 
     @staticmethod
@@ -47,6 +47,17 @@ class Output:
         with open(filename, 'w') as file:
             dump(data, file, indent=indent)
             file.write('\n')
+
+    @staticmethod
+    def average(data: any) -> int:
+        if len(data) == 0:
+            return 0
+        
+        if type(data) is list:
+            return sum(data) / len(data)
+        
+        if type(data) is dict:
+            return sum([data.values()]) / len(data)
 
     @classmethod
     def plot(cls, name, x_label, y_label, title):
@@ -72,7 +83,7 @@ class Output:
                 to_plot.append(len(data[alg][step]['data'][name]))
             plt.plot(cls.time, to_plot.copy(), color=cls.colors[i], linestyle='-', linewidth=2, markersize=6, label=alg)
             i+=1
-        cls.plot('', 'Steps', 'Number of satellites', name)
+        cls.plot('', 'Steps', 'Number of services', name)
             
     @classmethod
     def plot_migrations(cls, data):
@@ -84,15 +95,20 @@ class Output:
                 migrations.append(sum([ mig for mig in data[alg][step]['migrations'].values() ]))
             plt.plot(cls.time, migrations, color=cls.colors[i], linestyle='-', linewidth=2, markersize=6, label=alg)
             i+=1
-        cls.plot('', 'Steps', 'Number of satellites', 'migrations')
+        cls.plot('', 'Steps', 'Number of migrations', 'migrations')
 
     @classmethod
     def plot_graphics(cls, data):
-        # Dados de provisionamento
+
+        # Determining graphic dimensions if necessary
+        cls.time = cls.time or [ i for i in range(0, max([ len(alg) for alg in data[0].values() ])) ]
+
+        # Provisioning data
         cls.plot_data(data, 'unprovisioned')
         cls.plot_data(data, 'provisioned')
         cls.plot_data(data, 'provisioning')
         cls.plot_data(data, 'end_services')   
+        cls.plot_data(data, 'interrupted')   
 
-        # Migrações
+        # Migrations
         cls.plot_migrations(data)

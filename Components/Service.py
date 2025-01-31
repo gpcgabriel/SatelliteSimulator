@@ -56,10 +56,12 @@ class Service():
         satellite.provision_service(self)
         self.satellite = satellite
         self.status = 'provisioning'
-        Metrics.metrics.set_provisioning(self.id)
+
         if self.migration_flag:
             Metrics.metrics.set_migration(self.id)
             self.migration_flag = False
+        else:
+            Metrics.metrics.set_provisioning(self.id)
 
     def stop_service(self, id, step) -> None:
         self.satellite.stop_service(self.id, self.demand, step)
@@ -72,9 +74,8 @@ class Service():
         return (geodesic(self.coordinates, sat_coordinates).kilometers) < sat_range
 
     def process_service(self, step) -> None:
-
         # Checking if the process is allocated to a satellite
-        if self.satellite == None:
+        if not self.satellite:
             return
         
         if step < self.start:
@@ -89,15 +90,17 @@ class Service():
                 return
         
         # If satellite is coming out of range, it finds a new one to migrate
-        if step < num_steps:
+        if step < len(self.satellite.coordinates):
             if not self.in_range(self.satellite.coordinates[step+1]) and not self.provisioned_time == 1:
-                Metrics.metrics.set_migration(self.id)
-                self.status = "unprovisioned"
+                # Metrics.metrics.set_migration(self.id)
+                self.status = "migrating"
 
         # Checking if the allocated satellite is out of range
         if not self.in_range(self.satellite.coordinates[step]):
+            self.end = step
             self.stop_service(self.satellite.id, step)
-            Metrics.metrics.set_unprovisioned(self.id)
+            Metrics.metrics.set_interrupted(self.id)
+            self.status = 'finished'
             return
                 
         self.provisioned_time -= 1
@@ -108,6 +111,7 @@ class Service():
             "demand": self.demand,
             "start": self.start,
             "provisioned_time": self.provisioned_time,
+            "status": self.status,
             "satellite": self.satellite.to_dict() if self.satellite else []
         }
 
