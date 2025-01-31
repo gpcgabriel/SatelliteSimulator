@@ -1,4 +1,4 @@
-from general_utilities import default_coordinates, sat_range, num_steps
+from general_utilities import default_coordinates, sat_range
 from geopy.distance import geodesic
 from Components.Metrics import Metrics
 

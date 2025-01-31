@@ -29,58 +29,71 @@ class Simulator:
 
     def allocate_services(self, algorithm) -> any:
         # return algorithm(self.step, self.satellites, self.services)
-        status_to_allocate = ["unprovisioned", "created"]
-        unprovided_services = [ s for s in self.services if s.satellite == None and s.status in status_to_allocate ]
+        status_to_allocate = ["unprovisioned", "created", "migrating"]
+        unprovided_services = [ s for s in self.services if s.start <= self.step and s.status in status_to_allocate ]
         return algorithm(self.step, self.satellites, unprovided_services)
 
     def process_services(self):
         for service in self.services:
             service.process_service(self.step)
 
-    def set_unprovisioned(self):
-        for service in self.services:
-            self.metrics.set_unprovisioned(service.id)
-
     def run(self) -> None:
-        data = {}
+        data = []
 
-        for alg in algorithms:
-            data[alg.__name__] = {}
-            self.metrics = Metrics()
+        for execution in range(self.num_executions):
+            data.append({})
 
-            # Setting all services as 'unprovisioned'
-            self.set_unprovisioned()
+            for alg in self.algorithms:
+                data[execution][alg.__name__] = {}
+                self.metrics = Metrics()
 
-            for self.step in range(0, num_steps):
+                for self.step in range(0, num_steps):
 
-                # Checks if the satellite is coming out of range, if its finished...
-                self.process_services()
+                    # Checks if the satellite is coming out of range, if its finished...
+                    self.process_services()
 
-                # Showing execution steps
-                print(f"============ EXECUTION {execution} --- {alg.__name__.upper()}: {self.step} ============")
-                if self.verbose:
-                    for i, service in enumerate(self.services):
-                        if service.start < self.step:
-                            continue 
+                    # Showing execution steps
+                    print(f"============ EXECUTION {execution} --- {alg.__name__.upper()}: {self.step} ============")
+                    if self.verbose:
+                        for i, service in enumerate(self.services):
+                            if service.start < self.step:
+                                continue 
 
-                        print(f"[{service.id}]: STATUS: {service.status}   TIME REMAINING: {service.provisioned_time}     START: {service.start}")
+                            print(f"[{service.id}]: STATUS: {service.status}   TIME REMAINING: {service.provisioned_time}     START: {service.start}")
+                    print()
+
+                    # Try to allocate unallocated services
+                    self.allocate_services(alg)
+
+                    # Getting relevant metrics
+                    for srv in self.services:
+
+                        if self.step < srv.start:
+                            continue
+
+                        # if not srv.status == 'migrating' and not srv.status == 'created':
+                        #     continue
+
+                        if srv.status == 'created':
+                            Metrics.metrics.set_unprovisioned(srv.id)
+                            
+                        for sat in self.satellites:    
+                            if srv.in_range(sat.coordinates[self.step]) and srv.demand['cpu'] <= sat.capacity['cpu'] and srv.demand['memory'] <= sat.capacity['memory']:
+                                Metrics.metrics.set_available_satellite(srv.id, sat)
+
+                    data[execution][alg.__name__][self.step] = self.metrics.get_metrics(self.services)
+                    
+                    self.remove_finished_services()
+
+                    self.metrics.clear_available_satellites()
+                    # self.metrics.clear_migrations()
+                
+                print()
+                print()
                 print()
 
+                self.services = [ Service(srv.start, srv.demand.copy(), srv.coordinates, srv.provisioned_time) for srv in ComponentManager.services ]
+                self.metrics.clear_metrics()
 
-                # Try to allocate unallocated services
-                self.allocate_services(alg)
-
-                data[alg.__name__][self.step] = self.metrics.get_metrics(self.services)
-                
-                self.remove_finished_services()
-                # self.metrics.clear_migrations()
-            
-            print()
-            print()
-            print()
-
-            self.services = [ Service(srv.start, srv.demand.copy(), srv.coordinates, srv.provisioned_time) for srv in ComponentManager.services ]
-            self.metrics.clear_metrics()
-
-        ComponentManager.write_log(data, path_log)
-        ComponentManager.plot_graphics(path_log)
+            ComponentManager.write_log(data, path_log)
+            ComponentManager.plot_graphics(path_log)

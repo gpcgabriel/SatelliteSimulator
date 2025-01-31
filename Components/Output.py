@@ -77,10 +77,10 @@ class Output:
     def plot_data(cls, data, name):
         i=0
         plt.figure(figsize=(10, 6)) # Criando o gráfico com um tamanho de figura específico
-        for alg in data:
+        for alg in data[0]:
             to_plot = []
-            for step in data[alg]:
-                to_plot.append(len(data[alg][step]['data'][name]))
+            for step in data[0][alg]:
+                to_plot.append(cls.average([ len(execution[alg][step]['data'][name]) for execution in data ]))
             plt.plot(cls.time, to_plot.copy(), color=cls.colors[i], linestyle='-', linewidth=2, markersize=6, label=alg)
             i+=1
         cls.plot('', 'Steps', 'Number of services', name)
@@ -89,13 +89,76 @@ class Output:
     def plot_migrations(cls, data):
         i=0
         plt.figure(figsize=(10, 6)) # Criando o gráfico com um tamanho de figura específico
-        for alg in data:
+        for alg in data[0]:
             migrations = []
-            for step in data[alg]:
-                migrations.append(sum([ mig for mig in data[alg][step]['migrations'].values() ]))
+            for step in data[0][alg]:
+                migrations.append(cls.average([ sum(execution[alg][step]['migrations'].values()) for execution in data ]))
             plt.plot(cls.time, migrations, color=cls.colors[i], linestyle='-', linewidth=2, markersize=6, label=alg)
             i+=1
         cls.plot('', 'Steps', 'Number of migrations', 'migrations')
+
+    @classmethod
+    def plot_available_satellites(cls, data):
+        i=0
+        plt.figure(figsize=(10, 6)) # Criando o gráfico com um tamanho de figura específico
+        for alg in data[0]:
+            available_satellites_average = []
+            for step in data[0][alg]:
+                available_satellites = [ cls.average([ srv['number_of_available_satellites'] for srv in execution[alg][step]['available_satellites'].values() ]) for execution in data ]             
+                if len(available_satellites) > 0:
+                    available_satellites_average.append(cls.average(available_satellites))
+                else:
+                    # Hiding values when no services are searching for allocation
+                    available_satellites_average.append(None)
+            plt.plot(cls.time, available_satellites_average, color=cls.colors[i], linestyle='-', linewidth=2, markersize=6, label=alg)
+            i+=1
+        cls.plot('', 'Steps', 'Number of available satellites', 'available satellites average')
+
+    @classmethod
+    def plot_satellite_demand_parameters_availability(cls, data, parameters):
+        for param in parameters:
+            i=0
+            plt.figure(figsize=(10, 6)) # Criando o gráfico com um tamanho de figura específico
+            for alg in data[0]:
+                param_availability_average = []
+                for step in data[0][alg]:
+                    param_availability = [
+                        cls.average([ srv['total_availability'][param]/srv['number_of_available_satellites'] if srv['total_availability'].get(param) else 0 for srv in execution[alg][step]['available_satellites'].values() ]) for execution in data
+                    ]
+                    if len(param_availability) > 0:
+                        param_availability_average.append(sum(param_availability)/len(param_availability))
+                    else:
+                        # Hiding values when no services are searching for allocation
+                        param_availability_average.append(None)
+                plt.plot(cls.time, param_availability_average, color=cls.colors[i], linestyle='-', linewidth=2, markersize=6, label=alg)
+
+                # Forcing to plot in the right range
+                plt.ylim(0, 110)
+                i+=1
+            cls.plot('', 'Steps', f'{param} availability average', f'{param} availability average')
+
+    @classmethod
+    def plot_service_demand_parameters(cls, data, parameters):
+        for param in parameters:
+            i=0
+            plt.figure(figsize=(10, 6)) # Criando o gráfico com um tamanho de figura específico
+            for alg in data[0]:
+                param_demand_average = []
+                for step in data[0][alg]:
+                    param_demand = [
+                        cls.average([ srv['demand'][param] for srv in execution[alg][step]['services'] if srv['status'] in ['migrating', 'unprovisioned', 'created'] and srv['start'] <= int(step) ]) for execution in data
+                    ]
+                    if len(param_demand) > 0:
+                        param_demand_average.append(sum(param_demand)/len(param_demand))
+                    else:
+                        param_demand_average.append(0)
+
+                plt.plot(cls.time, param_demand_average, color=cls.colors[i], linestyle='-', linewidth=2, markersize=6, label=alg)
+
+                # Forcing to plot the maximum values
+                plt.ylim(0, 100)
+                i+=1
+            cls.plot('', 'Steps', f'{param} demand average', f'{param} demand average')
 
     @classmethod
     def plot_graphics(cls, data):
@@ -112,3 +175,10 @@ class Output:
 
         # Migrations
         cls.plot_migrations(data)
+
+        # Resources availability
+        cls.plot_available_satellites(data)
+        cls.plot_satellite_demand_parameters_availability(data, ['cpu', 'memory'])
+        
+        # Services demand
+        cls.plot_service_demand_parameters(data, ['cpu', 'memory'])
