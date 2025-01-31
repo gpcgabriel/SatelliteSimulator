@@ -1,7 +1,6 @@
 from .lambda_functions import distance as dst
 from .lambda_functions import has_capacity_to_host as hcth
-
-sat_range = 2000.0
+from general_utilities import sat_range
 
 def get_exposed_time(service, satellite, current_step) -> int:
     count = 0

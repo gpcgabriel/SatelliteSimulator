@@ -1,8 +1,7 @@
 from .lambda_functions import distance as dst
 from .lambda_functions import less_distance as ld
 from .lambda_functions import has_capacity_to_host as hcth
-
-sat_range = 2000.0
+from general_utilities import sat_range
 
 def less_distance_allocation(step, satellites : list, services : list):
     for service in services:

@@ -1,8 +1,8 @@
 from .lambda_functions import distance as dst
 from .lambda_functions import has_capacity_to_host as hcth
+from general_utilities import sat_range
 
 def search(service, satellites, step) -> object:
-    sat_range = 2000.0 # Não foi possível importar o valor de general
     selected = None
 
     for sat in satellites:

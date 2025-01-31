@@ -1,7 +1,6 @@
 from .lambda_functions import has_capacity_to_host as hcth
 from .lambda_functions import distance as dst
-
-sat_range = 2000.0
+from general_utilities import sat_range
 
 def best_fit_allocation(step, satellites: list, services: list):
     for service in services:

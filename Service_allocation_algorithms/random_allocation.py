@@ -1,7 +1,6 @@
 from random import choice
 from .lambda_functions import distance as dst
-
-sat_range = 2000.0
+from general_utilities import sat_range
 
 def random_allocation(step, satellites : list, services : list):
     for service in services:
