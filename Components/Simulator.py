@@ -1,8 +1,9 @@
-from general_utilities import num_steps, algorithms, path_log
+from general_utilities import path_log, num_steps
 from Components.Metrics import Metrics
 from Components.ComponentManager import ComponentManager
 from Components.Satellite import Satellite
 from Components.Service import Service
+from Service_allocation_algorithms import best_fit_allocation, simple_allocation, best_exposure_time
 
 class Simulator:
     
@@ -10,10 +11,16 @@ class Simulator:
       self.satellites = []
       self.services = []
       self.step = 0
+      self.algorithms = []
+      self.num_executions = None
+      self.verbose = False
 
-    def initialize(self, satellites, services) -> None:
+    def initialize(self, satellites, services, algorithms = [], num_executions = None, verbose: bool=False) -> None:
         self.satellites = [ Satellite('', sat.coordinates, {}) for sat in satellites ]
         self.services = [ Service(srv.start, srv.demand.copy(), srv.coordinates, srv.provisioned_time) for srv in services ]
+        self.algorithms = algorithms or [best_fit_allocation, simple_allocation, best_exposure_time]
+        self.num_executions = num_executions or 1
+        self.verbose = verbose or False
 
     def remove_finished_services(self) -> None:
         for service in self.services:
@@ -49,10 +56,16 @@ class Simulator:
                 # Checks if the satellite is coming out of range, if its finished...
                 self.process_services()
 
-                print(f"============ {alg.__name__.upper()}: {self.step} ============")
-                for i, service in enumerate(self.services):
-                    print(f"[{service.id}]: STATUS: {service.status}   TIME REMAINING: {service.provisioned_time}")
+                # Showing execution steps
+                print(f"============ EXECUTION {execution} --- {alg.__name__.upper()}: {self.step} ============")
+                if self.verbose:
+                    for i, service in enumerate(self.services):
+                        if service.start < self.step:
+                            continue 
+
+                        print(f"[{service.id}]: STATUS: {service.status}   TIME REMAINING: {service.provisioned_time}     START: {service.start}")
                 print()
+
 
                 # Try to allocate unallocated services
                 self.allocate_services(alg)
