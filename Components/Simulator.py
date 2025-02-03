@@ -14,13 +14,15 @@ class Simulator:
       self.algorithms = []
       self.num_executions = None
       self.verbose = False
+      self.path_log = None
 
-    def initialize(self, satellites, services, algorithms = [], num_executions = None, verbose: bool=False) -> None:
+    def initialize(self, satellites, services, algorithms = [], num_executions = None, verbose: bool=False, output: str=path_log) -> None:
         self.satellites = [ Satellite('', sat.coordinates, {}) for sat in satellites ]
         self.services = [ Service(srv.start, srv.demand.copy(), srv.coordinates, srv.provisioned_time) for srv in services ]
         self.algorithms = algorithms or [best_fit_allocation, simple_allocation, best_exposure_time]
         self.num_executions = num_executions or 1
         self.verbose = verbose or False
+        self.path_log = output or path_log
 
     def remove_finished_services(self) -> None:
         for service in self.services:
@@ -47,14 +49,15 @@ class Simulator:
                 data[execution][alg.__name__] = {}
                 self.metrics = Metrics()
 
+                print(f"============ EXECUTION {execution} --- {alg.__name__.upper()}: {self.step} ============")
                 for self.step in range(0, num_steps):
 
                     # Checks if the satellite is coming out of range, if its finished...
                     self.process_services()
 
                     # Showing execution steps
-                    print(f"============ EXECUTION {execution} --- {alg.__name__.upper()}: {self.step} ============")
                     if self.verbose:
+                        print(f"============ EXECUTION {execution} --- {alg.__name__.upper()}: {self.step} ============")
                         for i, service in enumerate(self.services):
                             if service.start < self.step:
                                 continue 
@@ -95,5 +98,5 @@ class Simulator:
                 self.services = [ Service(srv.start, srv.demand.copy(), srv.coordinates, srv.provisioned_time) for srv in ComponentManager.services ]
                 self.metrics.clear_metrics()
 
-            ComponentManager.write_log(data, path_log)
-            ComponentManager.plot_graphics(path_log)
+            ComponentManager.write_log(data, self.path_log)
+            ComponentManager.plot_graphics(self.path_log)

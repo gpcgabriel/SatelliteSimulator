@@ -1,7 +1,7 @@
 from Components import *
 from Components.Output import Output
 from json import dump, load
-from general_utilities import path_dataset
+from general_utilities import path_dataset, path_log
 from os import path, mkdir
 
 class ComponentManager():
@@ -21,11 +21,11 @@ class ComponentManager():
             self.initialized = True
     
     @classmethod
-    def initialize_simulator(cls, algorithms: list[callable]=[], num_executions: int=None, verbose: bool=False) -> None:
+    def initialize_simulator(cls, algorithms: list[callable]=[], num_executions: int=None, output=path_log, verbose: bool=False) -> None:
         # Importação tardia de Simulator para evitar dependência circular
         from .Simulator import Simulator
         cls.simulator = Simulator()
-        cls.simulator.initialize(cls.satellites, cls.services, algorithms=algorithms, num_executions=num_executions, verbose=verbose)
+        cls.simulator.initialize(cls.satellites, cls.services, algorithms=algorithms, num_executions=num_executions, output=output, verbose=verbose)
 
     @classmethod
     def start_simulator(cls) -> None:
