@@ -3,7 +3,7 @@
 A simulator for offloading services on satellites in python language.
 
 
-## Requeriments
+## Requirements
 - `contourpy`: 1.3.1;
 - `cycler`: 0.12.1;
 - `fonttools`: 4.55.5;
@@ -38,7 +38,7 @@ git pull origin main
 
 - Install requeriments with pip:
 ```bash
-pip install -r requeriments.txt
+pip install -r requirements.txt
 ```
 ## Usage
 Run code:
