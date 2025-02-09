@@ -9,7 +9,24 @@ def get_exposed_time(service, satellite, current_step) -> int:
             return count
         count += 1
 
+def sort_services_by_time(services: list):
+    sorted_services = {}
+    result = []
+
+    for service in services:
+        if not sorted_services.get(service.provisioned_time):
+            sorted_services[service.provisioned_time] = []
+        sorted_services[service.provisioned_time].append(service)
+    
+    result = []
+    for key in sorted(sorted_services.keys()):
+        result.extend(sorted_services[key])
+    
+    return result
+
 def best_exposure_time(step, satellites : list, services : list):
+
+    services = sort_services_by_time(services)
     for service in services:
         selected = None
         exposed_time = None
