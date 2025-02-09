@@ -1,0 +1,26 @@
+{
+    "satellites": {
+        "max": 400,
+        "dataset_path": "dataset/satellites.json"
+    },
+    "services": {
+        "duration": {
+            "min": 2,
+            "max": 10
+        },
+        "demand": {
+            "cpu": {
+                "min": 20,
+                "max": 70
+            },
+            "memory": {
+                "min": 30,
+                "max": 60
+            }
+        },
+        "per_step": {
+            "min": 20,
+            "max": 70
+        }
+    }
+}
