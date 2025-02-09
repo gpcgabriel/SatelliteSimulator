@@ -1,4 +1,4 @@
-from general_utilities import path_log, num_steps
+from general_utilities import default_path_log, num_steps, default_algorithms
 from Components.Metrics import Metrics
 from Components.ComponentManager import ComponentManager
 from Components.Satellite import Satellite
@@ -16,13 +16,13 @@ class Simulator:
       self.verbose = False
       self.path_log = None
 
-    def initialize(self, satellites, services, algorithms = [], num_executions = None, verbose: bool=False, output: str=path_log) -> None:
+    def initialize(self, satellites, services, algorithms = [], num_executions = None, verbose: bool=False, output: str=default_path_log) -> None:
         self.satellites = [ Satellite('', sat.coordinates, {}) for sat in satellites ]
         self.services = [ Service(srv.start, srv.demand.copy(), srv.coordinates, srv.provisioned_time) for srv in services ]
-        self.algorithms = algorithms or [best_fit_allocation, simple_allocation, best_exposure_time]
+        self.algorithms = algorithms or default_algorithms
         self.num_executions = num_executions or 1
         self.verbose = verbose or False
-        self.path_log = output or path_log
+        self.path_log = output or default_path_log
 
     def remove_finished_services(self) -> None:
         for service in self.services:

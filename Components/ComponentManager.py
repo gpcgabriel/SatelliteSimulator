@@ -1,7 +1,7 @@
 from Components import *
 from Components.Output import Output
 from json import dump, load
-from general_utilities import path_dataset, path_log
+from general_utilities import satellites_dataset_path, default_path_log
 from os import path, mkdir
 
 class ComponentManager():
@@ -32,8 +32,8 @@ class ComponentManager():
         cls.simulator.run()
 
     @classmethod
-    def get_coordinates(cls, num_satellites) -> dict:
-        dataset = cls.read_document(path_dataset)
+    def get_coordinates(cls, num_satellites, dataset_path: str=satellites_dataset_path) -> dict:
+        dataset = cls.read_document(dataset_path)
         sat_ids = []
         for satellite in dataset[0]["satellites"]:
             if len(sat_ids) >= num_satellites:
@@ -54,8 +54,8 @@ class ComponentManager():
         return coordinates
 
     @classmethod
-    def create_satellites(cls, num_satellites) -> None:
-        coordinates = cls.get_coordinates(num_satellites)
+    def create_satellites(cls, num_satellites, dataset_path: str=satellites_dataset_path) -> None:
+        coordinates = cls.get_coordinates(num_satellites, dataset_path=dataset_path)
         for i in coordinates:
             cls.satellites.append(Satellite('', coordinates[i], {}))
     
