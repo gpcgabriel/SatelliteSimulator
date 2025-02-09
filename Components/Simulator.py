@@ -49,7 +49,7 @@ class Simulator:
                 data[execution][alg.__name__] = {}
                 self.metrics = Metrics()
 
-                print(f"============ EXECUTION {execution} --- {alg.__name__.upper()}: {self.step} ============")
+                print(f"============ EXECUTION {execution} --- {alg.__name__.upper()} ============")
                 for self.step in range(0, num_steps):
 
                     # Checks if the satellite is coming out of range, if its finished...
@@ -63,7 +63,7 @@ class Simulator:
                                 continue 
 
                             print(f"[{service.id}]: STATUS: {service.status}   TIME REMAINING: {service.provisioned_time}     START: {service.start}")
-                    print()
+                        print()
 
                     # Try to allocate unallocated services
                     self.allocate_services(alg)
@@ -91,9 +91,10 @@ class Simulator:
                     self.metrics.clear_available_satellites()
                     # self.metrics.clear_migrations()
                 
-                print()
-                print()
-                print()
+                if self.verbose:
+                    print()
+                    print()
+                    print()
 
                 self.services = [ Service(srv.start, srv.demand.copy(), srv.coordinates, srv.provisioned_time) for srv in ComponentManager.services ]
                 self.metrics.clear_metrics()

@@ -21,7 +21,7 @@ class ComponentManager():
             self.initialized = True
     
     @classmethod
-    def initialize_simulator(cls, algorithms: list[callable]=[], num_executions: int=None, output=path_log, verbose: bool=False) -> None:
+    def initialize_simulator(cls, algorithms: list[callable]=[], num_executions: int=None, output=default_path_log, verbose: bool=False) -> None:
         # Importação tardia de Simulator para evitar dependência circular
         from .Simulator import Simulator
         cls.simulator = Simulator()

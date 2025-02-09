@@ -75,7 +75,7 @@ if __name__ == "__main__":
     # )
 
     # Initialize and start the simulator
-    cm.initialize_simulator(algorithms=allocation_algorithms, num_executions=10, output=path_log)
+    cm.initialize_simulator(algorithms=allocation_algorithms, num_executions=10, output=path_log, verbose=args.verbose)
     cm.start_simulator()
 
     print("\nDONE!")
