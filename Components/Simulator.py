@@ -97,6 +97,7 @@ class Simulator:
                     print()
 
                 self.services = [ Service(srv.start, srv.demand.copy(), srv.coordinates, srv.provisioned_time) for srv in ComponentManager.services ]
+                self.satellites = [ Satellite('', sat.coordinates, {}) for sat in ComponentManager.satellites ]
                 self.metrics.clear_metrics()
 
             ComponentManager.write_log(data, self.path_log)
