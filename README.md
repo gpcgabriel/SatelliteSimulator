@@ -55,6 +55,6 @@ python3 main.py -v <verbosity_level> -o <output_file_path> -c <config_file_path>
 ## 📩 Support
 
 For questions or suggestions, contact us at:
-✉️ gabrieprates.aluno@unipampa.edu.br  
+✉️ gabrielprates.aluno@unipampa.edu.br  
 ✉️ diogomonteiro.aluno@unipampa.edu.br
 
