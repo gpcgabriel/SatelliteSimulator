@@ -1,55 +1,60 @@
-
 # SatelliteSimulator
-A simulator for offloading services on satellites in python language.
 
+**SatelliteSimulator** is a simulator for service offloading on Low-Earth Orbit (LEO) satellites. It implements the OLEO heuristic and other reference approaches. For more details, check our article available in the DOI. As future work, we aim to parameterize satellites and develop new heuristics to improve Quality of Service (QoS).
 
-## Requirements
-- `contourpy`: 1.3.1;
-- `cycler`: 0.12.1;
-- `fonttools`: 4.55.5;
-- `geographiclib`: 2.0;
-- `geopy`: 2.4.1;
-- `kiwisolver`: 1.4.8;
-- `matplotlib`: 3.10.0;
-- `numpy`: 2.2.2;
-- `packaging`: 24.2;
-- `pillow`: 11.1.0;
-- `pyparsing`: 3.2.1;
-- `python-dateutil`: 2.9.0.post0;
-- `six`: 1.17.0;
+## 📦 Installation
+To install and set up the project, run the following commands:
 
-## Installation
-Execute the follow script to install this project:
-
-- Initialize git:
+1. Initialize the Git repository:
 ```bash
 git init
 ```
 
-- Add repository:
+2. Add the remote repository:
 ```bash
 git remote add origin https://github.com/gpcgabriel/SatelliteSimulator.git
 ```
 
-- Fetch the Latest Changes
+3. Fetch the latest version of the code:
 ```bash
 git pull origin main
 ```
 
-- Install requeriments with pip:
+4. Install dependencies:
 ```bash
 pip install -r requirements.txt
 ```
-## Usage
-Run code:
+
+## 🚀 Usage
+To run the simulation, modify `dataset/simulation.json` config file and use the following command:
 ```bash
 python3 main.py
 ```
 
-## Authors
+Or configure optional parameters:
+```bash
+python3 main.py -v <verbosity_level> -o <output_file_path> -c <config_file_path>
+```
+
+- **Verbosity level (`-v`)**:
+  - `0`: Displays only the status when a new algorithm starts.
+  - `1`: Displays the state of each service at every step.
+- **Output file (`-o`)**: Defines the path where the final JSON with metrics will be saved. 
+- **Configuration file (`-c`)**: Contains detailed specifications of the simulation.
+
+## 🚨 Notes:
+- To modify the number of simulation steps, edit the `general_utilities.py` file.
+- Graphics are available at `graphics/` directory.
+
+
+## 👥 Authors
 - [@gpcgabriel](https://www.github.com/gpcgabriel)
 - [@diogo2m](https://www.github.com/diogo2m)
 - [@mcluizelli](https://www.github.com/mcluizelli)
 
-## Support
-If you have any questions or suggestions, please contact us by email: gabrieprates.aluno@unipampa.edu.br or diogomonteiro.aluno@unipampa.edu.br
+## 📩 Support
+
+For questions or suggestions, contact us at:
+✉️ gabrieprates.aluno@unipampa.edu.br  
+✉️ diogomonteiro.aluno@unipampa.edu.br
+
