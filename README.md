@@ -45,7 +45,7 @@ python3 main.py -v <verbosity_level> -o <output_file_path> -c <config_file_path>
 ## 🚨 Notes:
 - To modify the number of simulation steps, edit the `general_utilities.py` file.
 - Graphics are available at `graphics/` directory.
-
+- To generate a satellite dataset like ours, check out [Satellite Tracker Script](./SatelliteTrackerScript/).
 
 ## 👥 Authors
 - [@gpcgabriel](https://www.github.com/gpcgabriel)
