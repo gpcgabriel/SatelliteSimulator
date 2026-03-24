@@ -8,8 +8,9 @@ from Service_allocation_algorithms import (
     random_allocation,
     simple_allocation,
     best_exposure_time,
-    improved_best_exposure_time,
-    improved_best_fit
+    lcmga_allocation
+    # improved_best_exposure_time,
+    # improved_best_fit
 )
 
 # Constants and Variables for the Algorithm
@@ -28,6 +29,7 @@ default_algorithms = [
      random_allocation,
      simple_allocation,
      best_exposure_time,
-     improved_best_exposure_time,
-     improved_best_fit
+     lcmga_allocation
+    #  improved_best_exposure_time,
+    #  improved_best_fit
 ] # Default allocation algorithms (you should changes this on the main.py file)

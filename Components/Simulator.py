@@ -3,7 +3,7 @@ from Components.Metrics import Metrics
 from Components.ComponentManager import ComponentManager
 from Components.Satellite import Satellite
 from Components.Service import Service
-from Service_allocation_algorithms import best_fit_allocation, simple_allocation, best_exposure_time
+from Service_allocation_algorithms import best_fit_allocation, simple_allocation, best_exposure_time, lcmga_allocation
 
 class Simulator:
     

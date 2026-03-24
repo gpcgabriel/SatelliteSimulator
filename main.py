@@ -9,8 +9,9 @@ from Service_allocation_algorithms import (
     random_allocation,
     simple_allocation,
     best_exposure_time,
-    improved_best_exposure_time,
-    improved_best_fit,
+    lcmga_allocation
+    # improved_best_exposure_time,
+    # improved_best_fit,
 )
 
 def generate_services(min_duration, max_duration, min_cpu, max_cpu, min_memory, max_memory, min_services, max_services):
@@ -44,13 +45,14 @@ if __name__ == "__main__":
 
     # Define the allocation algorithms
     allocation_algorithms = [
-        best_fit_allocation,
-        less_distance_allocation,
-        random_allocation,
-        simple_allocation,
+        # best_fit_allocation,
+        # less_distance_allocation,
+        # random_allocation,
+        # simple_allocation,
         best_exposure_time,
-        improved_best_exposure_time,
-        improved_best_fit,
+        lcmga_allocation,
+        # improved_best_exposure_time,
+        # improved_best_fit,
     ]
 
     # Create satellites

@@ -3,5 +3,6 @@ from Service_allocation_algorithms.best_fit_allocation import *
 from Service_allocation_algorithms.random_allocation import *
 from Service_allocation_algorithms.less_distance_allocation import *
 from Service_allocation_algorithms.best_exposure_time import *
-from Service_allocation_algorithms.improved_best_exposure_time import *
-from Service_allocation_algorithms.improved_best_fit import *
+from Service_allocation_algorithms.lcmga import lcmga_allocation
+# from Service_allocation_algorithms.improved_best_exposure_time import *
+# from Service_allocation_algorithms.improved_best_fit import *
